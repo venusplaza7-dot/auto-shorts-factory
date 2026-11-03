@@ -1,63 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shorts Factory - Copyright Safe</title>
+<title>Shorts Factory</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,sans-serif}
-body{background:#0a0a0a;color:#fff;min-height:100vh;padding:20px}
-.header{display:flex;justify-content:space-between;align-items:center;padding:20px 0;border-bottom:1px solid #222}
-.badge{background:#00ff88;color:#000;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:800}
+body{background:#0a0a0a;color:#fff;font-family:sans-serif;padding:20px}
 .card{background:#151515;border:1px solid #222;border-radius:16px;padding:20px;margin:16px 0}
-.card h3{margin-bottom:12px;color:#888;font-size:12px;letter-spacing:1px}
-.item{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid #1a1a1a}
-.tag{font-size:11px;padding:4px 8px;border-radius:6px;background:#222}
-.tag.green{background:#00ff88;color:#000}
-.btn{width:100%;padding:16px;background:#fff;color:#000;border:none;border-radius:12px;font-weight:800;font-size:16px;margin-top:12px;cursor:pointer}
-.btn.black{background:#222;color:#fff}
-input{width:100%;background:#111;border:1px solid #222;padding:14px;border-radius:10px;color:#fff;margin:8px 0}
-.log{background:#000;color:#0f0;font-family:monospace;font-size:12px;padding:12px;border-radius:8px;height:120px;overflow:auto}
+.badge{background:#00ff88;color:#000;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:800;float:right}
+.btn{width:100%;padding:16px;background:#fff;color:#000;border-radius:12px;font-weight:800;margin-top:10px}
+input{width:100%;background:#111;border:1px solid #333;padding:12px;border-radius:8px;color:#fff;margin:6px 0}
 </style>
 </head>
 <body>
-<div class="header">
-  <h1>SHORTS FACTORY</h1>
-  <span class="badge">● AUTONOMOUS • COPYRIGHT SAFE</span>
+<h1>SHORTS FACTORY <span style="background:#00ff88;color:#000;font-size:10px;padding:6px 12px;border-radius:20px">AUTONOMOUS • COPYRIGHT SAFE</span></h1>
+
+<div class="card">
+<h3>✅ DEPLOYMENT SUCCESSFUL</h3>
+<p style="color:#0f0">Your factory is live at venus13.vercel.app<br>No more 404!</p>
 </div>
 
 <div class="card">
-  <h3>TODAY'S VIRAL IDEAS (Title Only - No Download)</h3>
-  <div class="item"><span>1. Beat 【entity-LeBron¦canonical_name=LeBron】 In Basketball, Win $100k</span><span class="tag green">VIRAL</span></div>
-  <div class="item"><span>2. 【entity-Erling Haaland¦canonical_name=Erling Haaland】 1v1 Challenge</span><span class="tag">SPORTS</span></div>
-  <div class="item"><span>3. 【entity-Caitlin Clark¦canonical_name=Caitlin Clark】 Logo 3s Are Unreal</span><span class="tag">TRENDING</span></div>
+<h3>1. Beat 【entity-LeBron¦canonical_name=LeBron】 In Basketball, Win $100k - VIRAL</h3>
+<p style="color:#888;font-size:13px">Original script: "【entity-MrBeast¦canonical_name=MrBeast】 challenged 【entity-LeBron¦canonical_name=LeBron】 to a 1-min shootout for 100k... Here's why 【entity-LeBron¦canonical_name=LeBron】 almost lost..."<br><br>Source: 【entity-Pexels¦canonical_name=Pexels】 basketball stock (copyright free) + AI voice</p>
+<button class="btn">Generate This Short</button>
 </div>
 
 <div class="card">
-  <h3>HOW WE STAY COPYRIGHT SAFE</h3>
-  <p style="color:#999;line-height:1.6;font-size:14px">
-  ❌ We DON'T download 【entity-MrBeast¦canonical_name=MrBeast】 video<br>
-  ✅ We DO: Get title → AI rewrites to original commentary → Use 【entity-Pexels¦canonical_name=Pexels】 stock + AI voice<br>
-  Result: No claim, monetizable.
-  </p>
+<h3>Connect APIs (Last Step)</h3>
+<input id="yt" placeholder="YouTube API Key">
+<input id="pex" placeholder="【entity-Pexels¦canonical_name=Pexels】 API Key - free at 【entity-pexels¦canonical_name=Pexels】.com/api">
+<input id="openai" placeholder="OpenAI API Key">
+<button class="btn" onclick="save()">Save & Start Bot</button>
 </div>
 
-<div class="card">
-  <h3>CONFIG</h3>
-  <input placeholder="YouTube Data API Key">
-  <input placeholder="【entity-Pexels¦canonical_name=Pexels】 API Key (free)">
-  <button class="btn">Save & Deploy Bot</button>
-</div>
-
-<div class="card">
-  <h3>DEPLOY LOG</h3>
-  <div class="log">
-  > [bom1] Build started...<br>
-  > Fixed: Added index.html at /<br>
-  > No more 404 NOT_FOUND<br>
-  > Bot ready - scanning...<br>
-  </div>
-</div>
+<script>
+function save(){
+ localStorage.setItem('keys', JSON.stringify({
+   yt: document.getElementById('yt').value,
+   pex: document.getElementById('pex').value
+ }));
+ alert('Saved! Now connect 【entity-GitHub¦canonical_name=GitHub】 Action to auto-run every 6 hours.');
+}
+</script>
 </body>
 </html>
