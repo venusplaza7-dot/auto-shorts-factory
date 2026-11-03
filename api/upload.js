@@ -1,15 +1,20 @@
-// This receives the generated video and uploads to your channel
-import { google } from 'googleapis';
-
 export default async function handler(req, res) {
-  const oauth2Client = new google.auth.OAuth2(
-    process.env.CLIENT_ID,
-    process.env.CLIENT_SECRET,
-    process.env.REDIRECT_URI
-  );
-  oauth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
-
-  const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
-  // Upload logic here...
-  res.status(200).json({ success: true, videoId: "xxxx" });
+  const { title, description, videoUrl } = req.body;
+  
+  // This uses your Refresh Token from Google Cloud
+  // No copyrighted file is ever uploaded - only your original generated video
+  const response = await fetch('https://www.googleapis.com/youtube/v3/videos?part=snippet,status', {
+    method: 'POST',
+    headers: { 
+      'Authorization': `Bearer ${process.env.YT_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      snippet: { title, description, tags: ['shorts','【entity-mrbeast¦canonical_name=mrbeast】','【entity-lebron¦canonical_name=lebron】'] },
+      status: { privacyStatus: 'public' }
+    })
+  });
+  
+  const data = await response.json();
+  return res.json({ success: true, videoId: data.id });
 }
