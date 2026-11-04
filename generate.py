@@ -1,3 +1,9 @@
+
+ideas = [
+    "Win 100k basketball challenge!",
+    "Viral secrets revealed!",
+    "I spent 50 hours challenge!"
+]
 import os, tempfile, random
 from gtts import gTTS
 from moviepy.editor import AudioFileClip, ColorClip, CompositeVideoClip
