@@ -1,22 +1,17 @@
-
-name: Auto Shorts Factory
+name: auto-short-factory
 on:
-  schedule:
-    - cron: '0 */6 * * *' # Runs every 6 hours automatically
-  workflow_dispatch: # You can also press "Run" button from phone
-
+  schedule: [{ cron: '0 */2 * * *' }]
+  workflow_dispatch:
 jobs:
-  build:
+  run:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-      - run: |
-          pip install requests openai moviepy gTTS pexels_api
-          python generate.py
-      - uses: actions/upload-artifact@v3
-        with:
-          name: generated-shorts
-          path: ./output/
+        with: { python-version: '3.11' }
+      - run: pip install moviepy gtts requests
+      - run: python generate.py
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
