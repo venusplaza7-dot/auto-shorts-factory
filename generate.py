@@ -1,9 +1,3 @@
-
-ideas = [
-    "Win 100k basketball challenge!",
-    "Viral secrets revealed!",
-    "I spent 50 hours challenge!"
-]
 import os, tempfile, random
 from gtts import gTTS
 from moviepy.editor import AudioFileClip, ColorClip, CompositeVideoClip
@@ -11,8 +5,8 @@ from moviepy.editor import AudioFileClip, ColorClip, CompositeVideoClip
 print("=== FINAL FACTORY ===")
 
 ideas = [
-    "Beat the basketball challenge win 100 thousand dollars! What happened next shocked everyone!",
-    "【entity-Squid Game¦canonical_name=Squid Game】 secrets revealed! How the biggest YouTuber keeps you watching till the end!",
+    "Beat the basketball challenge win 100k dollars! What happened next shocked everyone!",
+    "Viral video secrets revealed! How top creators keep you watching till the end!",
     "I spent 50 hours in a crazy challenge and won!"
 ]
 script = random.choice(ideas)
