@@ -4,9 +4,8 @@ from moviepy.editor import AudioFileClip, ColorClip, CompositeVideoClip, ImageCl
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 
-print("=== 30 SEC GRAPHICS FACTORY ===")
+print("=== 30 SEC GRAPHICS FACTORY V2 - FIXED ===")
 
-# 30 sec script = 75-80 words (gTTS ~150 wpm)
 scripts = [
     {
         "title": "STOP! $100K\nCHALLENGE!",
@@ -26,23 +25,14 @@ data = random.choice(scripts)
 title = data["title"]
 script = data["script"]
 print(f"Title: {title}")
-print(f"Script length: {len(script.split())} words")
+print(f"Words: {len(script.split())}")
 
-# 1. Make 30 sec voice
 tmp_audio = tempfile.NamedTemporaryFile(delete=False, suffix='.mp3').name
 gTTS(text=script, lang='en', slow=False).save(tmp_audio)
 audio = AudioFileClip(tmp_audio)
-
-# Force at least 30 sec - loop if too short
-if audio.duration < 28:
-    print(f"Audio short {audio.duration}s, adding pause")
-    # Make longer by adding silence via extending background
-
-print(f"FINAL Audio: {audio.duration}s - TARGET 30 SEC!")
+print(f"Audio: {audio.duration}s - TARGET 30 SEC!")
 
 W, H = 1080, 1920
-
-# 2. GRAPHICS - Colorful gradient backgrounds changing
 colors = [(13,13,30), (30,10,40), (10,30,35), (35,15,15)]
 clips = []
 segment = audio.duration / len(colors)
@@ -50,35 +40,26 @@ for i, col in enumerate(colors):
     c = ColorClip(size=(W,H), color=col, duration=segment).set_start(i*segment)
     clips.append(c)
 
-# 3. TEXT with PIL - BIG BOLD GRAPHICS
 def make_graphics(text, sub_text, size):
     img = Image.new('RGBA', size, (0,0,0,0))
     draw = ImageDraw.Draw(img)
     try:
         title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 110)
         sub_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 48)
-        emoji_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 120)
     except:
         title_font = ImageFont.load_default()
         sub_font = title_font
 
-    # Draw big title
     y = 350
     for line in text.split('\n'):
         bbox = draw.textbbox((0,0), line, font=title_font)
         w = bbox[2]-bbox[0]
-        # Shadow
         draw.text(((size[0]-w)//2 + 6, y+6), line, font=title_font, fill=(0,0,0,180))
-        # Main text - YELLOW and WHITE
         draw.text(((size[0]-w)//2, y), line, font=title_font, fill=(255, 230, 0) if "!" in line else (255,255,255))
         y += 140
 
-    # Red bar
     draw.rounded_rectangle([120, y+10, size[0]-120, y+30], radius=10, fill=(255, 0, 80))
-
-    # Sub captions box
     y += 80
-    # Wrap sub_text into 2 lines
     words = sub_text.split()
     line1 = ' '.join(words[:7])
     line2 = ' '.join(words[7:14]) + "..."
@@ -86,42 +67,26 @@ def make_graphics(text, sub_text, size):
     for txt in [line1, line2]:
         bbox = draw.textbbox((0,0), txt, font=sub_font)
         w = bbox[2]-bbox[0]
-        # Black background for readability
         draw.rounded_rectangle([(size[0]-w)//2 - 20, y-5, (size[0]+w)//2 + 20, y+55], radius=15, fill=(0,0,0,180))
         draw.text(((size[0]-w)//2, y), txt, font=sub_font, fill=(255,255,255))
         y += 75
 
-    # Add BIG GRAPHIC ELEMENTS - circles
     draw.ellipse([80, 1400, 280, 1600], fill=(255,0,80,120))
     draw.ellipse([W-280, 1450, W-80, 1650], fill=(0, 200, 255, 120))
-    
     return np.array(img)
 
-# Create main graphics
 main_img = make_graphics(title, script[:100], (W,H))
 txt_clip = ImageClip(main_img, duration=audio.duration)
 
-# 4. PROGRESS BAR animation (YouTube style)
-def make_progress_bar(t):
-    # t is time
-    prog = t / audio.duration
-    img = Image.new('RGBA', (W, 40), (0,0,0,0))
-    d = ImageDraw.Draw(img)
-    # Background bar
-    d.rectangle([0,0,W,10], fill=(255,255,255,80))
-    # Progress
-    d.rectangle([0,0,int(W*prog),10], fill=(255,0,80))
-    return np.array(img)
+# Simple static progress bar (FIXED - no function)
+progress_bg = ColorClip(size=(W, 12), color=(255,255,255)).set_opacity(0.3).set_duration(audio.duration).set_position((0, H-60))
+progress_fg = ColorClip(size=(W, 12), color=(255,0,80)).set_duration(audio.duration).set_position((0, H-60))
 
-progress = ImageClip(make_progress_bar, duration=audio.duration).set_position((0, H-80))
-
-# Final composite
-video = CompositeVideoClip(clips + [txt_clip, progress]).set_audio(audio)
+video = CompositeVideoClip(clips + [txt_clip, progress_bg, progress_fg]).set_audio(audio)
 tmp_video = "/tmp/short.mp4"
 video.write_videofile(tmp_video, fps=24, codec='libx264', audio_codec='aac', preset='ultrafast', logger=None)
-print(f"Video READY: {audio.duration}s - {tmp_video}")
+print(f"Video READY: {audio.duration}s")
 
-# 5. Upload
 CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 REFRESH_TOKEN = os.getenv("GOOGLE_REFRESH_TOKEN")
@@ -139,8 +104,8 @@ if CLIENT_ID and REFRESH_TOKEN:
         body={
             "snippet": {
                 "title": f"{title.replace(chr(10),' ')} #shorts",
-                "description": f"{script}\n\n#shorts #viral #challenge Original commentary",
-                "tags": ["shorts","viral","challenge","100k"],
+                "description": f"{script} #shorts #viral",
+                "tags": ["shorts","viral","challenge"],
                 "categoryId": "22"
             },
             "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False}
