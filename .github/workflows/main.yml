@@ -1,4 +1,4 @@
-name: Milo Pip 12 Per Day FREE
+name: Milo Pip REAL MOVIE 12 Per Day
 on:
   schedule:
     - cron: '17 */2 * * *'
@@ -9,22 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Install Deps
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core imagemagick
-          # REMOVE google-generativeai completely - it's dead
-          pip install Pillow==11.1.0 gTTS moviepy==1.0.3 numpy requests google-api-python-client google-auth-httplib2 google-auth-oauthlib
-          pip install --upgrade google-genai
-
-      - name: Generate + Upload
+          pip install Pillow==11.1.0 gTTS moviepy==1.0.3 numpy requests google-api-python-client google-auth-httplib2 google-auth-oauthlib google-genai
+      - name: Generate MOVIE
         env:
           GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           python generate.py
-
-      - name: Save Backup
+      - name: Save Movie
         uses: actions/upload-artifact@v4
         with:
           name: episode-${{ github.run_number }}
