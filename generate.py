@@ -1,3 +1,5 @@
+from PIL import Image
+Image.ANTIALIAS = Image.Resampling.LANCZOS
 import os, json, random, tempfile
 from gtts import gTTS
 from moviepy.editor import *
