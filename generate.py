@@ -9,7 +9,7 @@ print("=== MILO & PIP GEMINI FACTORY - 12 PER DAY FREE ===")
 
 # Use your Gemini key from GitHub Secret
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
-model = genai.GenerativeModel('gemini-2.0-flash')
+model = genai.GenerativeModel('gemini-3.8-flash')
 
 # 1. Generate NEW story with Gemini (every run = new episode)
 prompt = """Write a funny 70-word Tom and Jerry style cartoon story for kids.
