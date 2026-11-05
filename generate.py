@@ -4,7 +4,7 @@ from gtts import gTTS
 from moviepy.editor import *
 from PIL import Image, ImageDraw, ImageFont
 
-print("=== MILO & PIP NEW GENAI PACKAGE ===")
+print("=== MILO & PIP AUTO-MODEL FACTORY ===")
 
 client = genai.Client(api_key=os.getenv('GOOGLE_API_KEY'))
 
@@ -13,19 +13,43 @@ Characters: Milo orange cat in green sweater, Pip grey mouse in red cap.
 Plot: They are washing a red toy car with bubbles, slapstick, funny fall, happy ending.
 Return ONLY JSON: {"title": "Short title", "story": "story text"}"""
 
-response = client.models.generate_content(
-    model="gemini-3.8-flash-lite",
-    contents=prompt
-)
-text = response.text.replace('```json','').replace('```','').strip()
-ep = json.loads(text)
-print(f"GENERATED: {ep['title']}")
+# Try every model Google has - one will work
+models_to_try = [
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite",
+    "gemini-2.0-flash-001",
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
+    "gemini-1.5-flash-002"
+]
 
-# Voice + moving cartoon (same as before)
+ep = None
+for model_name in models_to_try:
+    try:
+        print(f"Trying model: {model_name}")
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt
+        )
+        text = response.text.replace('```json','').replace('```','').strip()
+        ep = json.loads(text)
+        print(f"WORKING MODEL FOUND: {model_name} -> {ep['title']}")
+        break
+    except Exception as e:
+        print(f"Model {model_name} failed: {e}")
+        continue
+
+if not ep:
+    raise Exception("All Gemini models failed - check GOOGLE_API_KEY")
+
+# Voice
 tmp_mp3 = tempfile.NamedTemporaryFile(delete=False, suffix='.mp3').name
 gTTS(text=ep['story'] + " Follow Milo and Pip!", lang='en', slow=False).save(tmp_mp3)
 audio = AudioFileClip(tmp_mp3)
 
+# Real cartoon frame
 W,H = 1080,1920
 img = Image.new('RGB', (W,H), (135,206,235))
 draw = ImageDraw.Draw(img)
