@@ -1,7 +1,6 @@
 moviepy==1.0.3
-gTTS
+gtts
 google-api-python-client
 google-auth
 google-auth-oauthlib
-Pillow
-numpy
+requests
