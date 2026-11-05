@@ -1,41 +1,58 @@
+# MUST BE FIRST - FIXES PILLOW 11 + MOVIEPY 1.0.3
 from PIL import Image
 Image.ANTIALIAS = Image.Resampling.LANCZOS
-import os, json, random, tempfile
+
+import json, random, tempfile
 from gtts import gTTS
 from moviepy.editor import *
-from PIL import Image, ImageDraw, ImageFont
+from PIL import ImageDraw, ImageFont
 
-print("=== MILO & PIP FACTORY - GREEN BUILD NO API ===")
+print("=== MILO & PIP - NO RESIZE GLITCH - FINAL ===")
 
-# Use local episodes - guaranteed green
 with open('episodes.json') as f:
-    episodes = json.load(f)
-ep = random.choice(episodes)
+    ep = random.choice(json.load(f))
 
-title = ep.get('title', 'Milo Washes Car')
-story = ep.get('story', 'Milo washes car with bubbles and Pip helps. Funny splash!')
+title = ep.get('title', 'Milo Does Laundry Again')
+story = ep.get('story', 'Milo tries laundry again but puts too many clothes in the washing machine. Bubbles fly everywhere. Pip gets sucked into a T-shirt. Clothes fly out and land on Milos head.')
+
 print(f"EP: {title}")
 
 # Voice
 tmp_mp3 = tempfile.NamedTemporaryFile(delete=False, suffix='.mp3').name
 gTTS(text=story + " Follow Milo and Pip!", lang='en', slow=False).save(tmp_mp3)
 audio = AudioFileClip(tmp_mp3)
-print(f"Audio {audio.duration:.2f}s")
 
-# Cartoon frame with bubbles
+# Clean frame - like your 0.0s but NO distortion
 W,H = 1080,1920
 img = Image.new('RGB', (W,H), (135,206,235))
 draw = ImageDraw.Draw(img)
-for _ in range(30):
+for _ in range(40):
     x,y = random.randint(0,W), random.randint(0,H)
-    draw.ellipse([x,y,x+60,y+60], fill=(255,255,255,180), outline=(200,230,255))
-font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 80)
-draw.text((50, 1400), title[:30], fill="white", font=font, stroke_width=4, stroke_fill="black")
-img.save("frame.jpg")
+    draw.ellipse([x,y,x+50,y+50], fill=(255,255,255,200))
 
-clip = ImageClip("frame.jpg", duration=audio.duration)
-clip = clip.resize(lambda t: 1 + 0.05 * t / audio.duration)
+# FIXED TEXT - wrapped, not stretching
+font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 70)
+# Wrap title so it doesn't cut off
+words = title.split()
+lines = []
+line = ""
+for w in words:
+    if len(line + " " + w) < 20:
+        line += " " + w
+    else:
+        lines.append(line)
+        line = w
+lines.append(line)
+y = 1300
+for l in lines:
+    draw.text((60, y), l.strip(), fill="white", font=font, stroke_width=3, stroke_fill="black")
+    y += 85
+
+img.save("clean_frame.jpg")
+
+# NO RESIZE LAMBDA - STATIC = NO GLITCH
+clip = ImageClip("clean_frame.jpg", duration=audio.duration)
 final = clip.set_audio(audio)
 final.write_videofile("short.mp4", fps=30, codec='libx264', audio_codec='aac')
 
-print(f"DONE GREEN {os.path.getsize('short.mp4')} bytes")
+print(f"DONE CLEAN - NO LINES - {audio.duration:.1f}s")
