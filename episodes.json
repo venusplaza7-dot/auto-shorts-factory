@@ -1,5 +1,8 @@
 [
-  {"title": "Milo Balances Laundry Tower", "visual_prompt": "Milo orange cat in green sweater balancing tall stack of colorful towels on head in laundry room, Pip grey mouse in red cap watching worried, photorealistic Pixar 3D, 9:16", "motion_prompt": "cat walking carefully balancing towels, wobbling, mouse running alongside, cinematic tracking shot"},
-  {"title": "Milo Makes Giant Pizza", "visual_prompt": "Milo and Pip in kitchen covered in pizza dough, giant pizza stuck to ceiling, funny chaos, Pixar 3D", "motion_prompt": "cat pulling dough, dough stretching comically, mouse sliding on cheese"},
-  {"title": "Milo Washes Car Bubble Disaster", "visual_prompt": "Milo washing car with huge bubbles everywhere, Pip inside bucket, car covered in foam, sunny driveway", "motion_prompt": "bubbles floating, cat slipping, mouse popping bubbles"}
+  {"title": "Milo Balances Laundry Tower", "story": "Milo the orange cat tries to carry a huge tower of towels. Pip the mouse tries to help from the top. It wobbles everywhere!"},
+  {"title": "Milo Makes Giant Pizza Disaster", "story": "Milo and Pip try to make a giant pizza. The cheese sticks to the ceiling and they both get tangled."},
+  {"title": "Milo Washes Car Bubble Chaos", "story": "Milo washes the car but makes a million bubbles. Pip surfs inside a bucket. Total bubble disaster."},
+  {"title": "Milo Builds 【entity-IKEA¦canonical_name=IKEA】 Shelf Fail", "story": "Milo tries to build a shelf. Pip gets trapped inside the box with the screws."},
+  {"title": "Milo Does Dishes Splash Zone", "story": "Milo does the dishes. Water goes everywhere. Pip rides a plate like a boat."},
+  {"title": "Milo Gardening Mayhem", "story": "Milo tries to plant flowers. Pip digs holes everywhere and they plant Milo by mistake."}
 ]
