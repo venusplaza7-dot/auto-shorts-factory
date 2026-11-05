@@ -13,11 +13,11 @@ jobs:
         with:
           python-version: '3.10'
           cache: 'pip'
-      - name: Install deps
+      - name: Install deps FIXED V9.2
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y ffmpeg
-          pip install gTTS moviepy==1.0.3 Pillow numpy google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          pip install Pillow==9.5.0 gTTS moviepy==1.0.3 numpy google-api-python-client google-auth-httplib2 google-auth-oauthlib
       - name: Generate Short
         env:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
