@@ -17,7 +17,7 @@ jobs:
       - name: Install Deps
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          sudo apt-get install -y ffmpeg fonts-dejavu-core imagemagick
           pip install Pillow==9.5.0 gTTS moviepy==1.0.3 numpy requests google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
       - name: Generate + Upload
