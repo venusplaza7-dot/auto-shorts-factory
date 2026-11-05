@@ -1,7 +1,7 @@
 name: Milo & Pip - 12 Per Day
 on:
   schedule:
-    - cron: '17 */2 * * *' # 12 times per day, every 2h
+    - cron: '17 */2 * * *'
   workflow_dispatch:
 
 jobs:
@@ -13,19 +13,20 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
+
       - name: Install Deps
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y ffmpeg fonts-dejavu-core
-          pip install -r requirements.txt
+          pip install Pillow==9.5.0 gTTS moviepy==1.0.3 numpy requests google-api-python-client google-auth-httplib2 google-auth-oauthlib
+
       - name: Generate + Upload
         env:
           GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
           GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
-          KLING_API_KEY: ${{ secrets.KLING_API_KEY }}
-        run: |
-          python generate.py
+        run: python generate.py
+
       - name: Save Backup
         if: always()
         uses: actions/upload-artifact@v4
