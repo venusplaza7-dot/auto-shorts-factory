@@ -1,35 +1,29 @@
-name: Milo & Pip - 12 Per Day
+name: Milo Pip 12 Per Day FREE
 on:
   schedule:
     - cron: '17 */2 * * *'
   workflow_dispatch:
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
 
       - name: Install Deps
         run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg fonts-dejavu-core
-          pip install Pillow==9.5.0 gTTS==2.5.1 moviepy==1.0.3 numpy==1.26.4 requests google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core imagemagick
+          pip install Pillow==9.5.0 gTTS moviepy==1.0.3 numpy requests google-api-python-client google-auth-httplib2 google-auth-oauthlib google-generativeai
 
-   - run: pip install Pillow==9.5.0 gTTS moviepy==1.0.3 numpy requests google-api-python-client google-auth-httplib2 google-auth-oauthlib google-generativeai   - name: Generate + Upload
+      - name: Generate + Upload
         env:
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          GOOGLE_REFRESH_TOKEN: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
-        run: python generate.py
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: |
+          python generate.py
 
       - name: Save Backup
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: episode-${{ github.run_number }}
           path: short.mp4
-          retention-days: 3
