@@ -1,15 +1,19 @@
-import os, tempfile, random, math
+import os, tempfile, random
+# FIX PILLOW 10+ BUG - Add ANTIALIAS back!
+from PIL import Image
+if not hasattr(Image, 'ANTIALIAS'):
+    Image.ANTIALIAS = Image.LANCZOS
+    print("Patched ANTIALIAS -> LANCZOS for Pillow 10+")
+
 from gtts import gTTS
 from moviepy.editor import AudioFileClip, ColorClip, CompositeVideoClip, ImageClip
-from PIL import Image, ImageDraw, ImageFont
+from PIL import ImageDraw, ImageFont
 import numpy as np
 
-print("=== V9.1 BEAUTIFUL FIXED ANTIALIAS BUG ===")
+print("=== V9.2 FINAL FIX ANTIALIAS PATCHED ===")
 
 story = "Stop scrolling! This is the one hundred thousand dollar basketball challenge that broke the internet! You must beat three impossible tasks! Basketball, football, and a puzzle! Fail one and you lose everything! The pressure was insane! But I found the trick top creators use to win! Watch till the last ten seconds! Comment what you think happened! Follow for Part 2! Subscribe now!"
-print(f"Words: {len(story.split())}")
 
-# Voice
 tmp_mp3 = tempfile.NamedTemporaryFile(delete=False, suffix='.mp3').name
 gTTS(text=story, lang='en', slow=False).save(tmp_mp3)
 tmp_wav = tempfile.NamedTemporaryFile(delete=False, suffix='.wav').name
@@ -35,8 +39,6 @@ def draw_blue_cat(pose="happy", size=600):
     if pose == "thinking":
         draw.ellipse([cx-70, eye_y-10, cx-20, eye_y+20], fill=(0,0,0))
         draw.ellipse([cx+20, eye_y-15, cx+70, eye_y+15], fill=(0,0,0))
-        draw.ellipse([cx-60, eye_y, cx-30, eye_y+10], fill=(255,255,255))
-        draw.ellipse([cx+30, eye_y-5, cx+60, eye_y+5], fill=(255,255,255))
     elif pose == "shocked":
         draw.ellipse([cx-80, eye_y-20, cx-20, eye_y+30], fill=(255,255,255))
         draw.ellipse([cx+20, eye_y-20, cx+80, eye_y+30], fill=(255,255,255))
@@ -46,19 +48,12 @@ def draw_blue_cat(pose="happy", size=600):
     else:
         draw.ellipse([cx-75, eye_y, cx-25, eye_y+25], fill=(0,0,0))
         draw.ellipse([cx+25, eye_y, cx+75, eye_y+25], fill=(0,0,0))
-        draw.ellipse([cx-65, eye_y+5, cx-35, eye_y+15], fill=(255,255,255))
-        draw.ellipse([cx+35, eye_y+5, cx+65, eye_y+15], fill=(255,255,255))
         if pose == "happy":
             draw.arc([cx-50, cy+20, cx+50, cy+70], 20, 160, fill=(0,0,0), width=6)
-        else:
-            draw.line([(cx-20, cy+50), (cx+20, cy+50)], fill=(0,0,0), width=4)
     draw.polygon([(cx-10, cy+15), (cx+10, cy+15), (cx, cy+30)], fill=(255,105,180))
-    for dx in [-1, 1]:
-        for wy in [cy+10, cy+25, cy+40]:
-            draw.line([(cx+dx*40, wy), (cx+dx*110, wy)], fill=(0,0,0), width=3)
     return np.array(img)
 
-def make_beautiful_bg(title, idx):
+def make_bg(title, idx):
     img = Image.new('RGB', (W, H), (10,10,30))
     draw = ImageDraw.Draw(img)
     for y in range(H):
@@ -67,21 +62,15 @@ def make_beautiful_bg(title, idx):
         b = int(50 + idx*15 + (y/H)*80)
         draw.line([(0,y),(W,y)], fill=(r,g,b))
     for _ in range(25):
-        x = random.randint(0,W)
-        y = random.randint(0,H)
-        s = random.randint(30,120)
+        x = random.randint(0,W); y = random.randint(0,H); s = random.randint(30,120)
         col = (random.randint(200,255), random.randint(180,255), random.randint(50,255))
         draw.ellipse([x-s, y-s, x+s, y+s], fill=col)
     try:
         title_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 115)
         sub_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 45)
-        emoji_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 85)
     except:
-        title_font = ImageFont.load_default()
-        sub_font = title_font
-        emoji_font = title_font
+        title_font = ImageFont.load_default(); sub_font = title_font
     y = 280
-    emojis = ["🔥","💰","😱","⚡"]
     for i, line in enumerate(title.split("\n")):
         bbox = draw.textbbox((0,0), line, font=title_font)
         w = bbox[2]-bbox[0]
@@ -92,17 +81,8 @@ def make_beautiful_bg(title, idx):
         fill = (255,235,0) if i==0 else (255,255,255)
         draw.text(((W-w)//2, y), line, font=title_font, fill=fill)
         y += 150
-    draw.text((W//2-40, y+20), emojis[idx % len(emojis)], font=emoji_font, fill=(255,255,255))
-    y += 130
+    y += 30
     draw.rounded_rectangle([80, y, W-80, y+16], radius=8, fill=(255,0,90))
-    y += 45
-    for chunk in ["VIRAL CHALLENGE","SECRET INSIDE"]:
-        bbox = draw.textbbox((0,0), chunk, font=sub_font)
-        w = bbox[2]-bbox[0]
-        draw.rounded_rectangle([(W-w)//2-25, y-8, (W+w)//2+25, y+60], radius=20, fill=(0,0,0))
-        draw.rounded_rectangle([(W-w)//2-25, y-8, (W+w)//2+25, y+60], radius=20, outline=(255,255,255), width=2)
-        draw.text(((W-w)//2, y), chunk, font=sub_font, fill=(255,255,255))
-        y += 80
     return np.array(img)
 
 titles = ["STOP!\n$100K\nON LINE!", "3 TASKS\nYOU MUST\nWIN!", "SECRET\nTRICK\nREVEALED!", "COMMENT\nBELOW!"]
@@ -112,12 +92,11 @@ chapter_dur = audio.duration / len(titles)
 
 for i, (title, pose) in enumerate(zip(titles, poses)):
     start = i * chapter_dur
-    bg_img = make_beautiful_bg(title, i)
+    bg_img = make_bg(title, i)
     bg_clip = ImageClip(bg_img, duration=chapter_dur).set_start(start)
     clips.append(bg_clip)
     cat_img = draw_blue_cat(pose, size=800)
     cat_clip = ImageClip(cat_img, duration=chapter_dur).set_start(start)
-    # FIXED: NO lambda resize - static resize only!
     cat_clip = cat_clip.resize(width=680).set_position((W-720, H-900))
     clips.append(cat_clip)
     print(f"Cat {pose} added")
@@ -153,8 +132,8 @@ try:
 except Exception as e:
     err=str(e)
     if "uploadLimitExceeded" in err or "exceeded" in err:
-        print("YOUTUBE LIMIT HIT - VIDEO SAVED FOR DOWNLOAD!")
+        print("YOUTUBE LIMIT HIT - VIDEO SAVED FOR DOWNLOAD! Download from Artifacts")
     else:
         print(f"Upload error: {e}")
 
-print("DONE V9.1 BEAUTIFUL FIXED")
+print("DONE V9.2 PATCHED")
