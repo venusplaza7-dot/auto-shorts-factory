@@ -14,7 +14,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg fonts-dejavu-core imagemagick
-          pip install Pillow==11.1.0 gTTS moviepy==1.0.3 numpy requests google-api-python-client google-auth-httplib2 google-auth-oauthlib google-generativeai
+          # REMOVE google-generativeai completely - it's dead
+          pip install Pillow==11.1.0 gTTS moviepy==1.0.3 numpy requests google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          pip install --upgrade google-genai
 
       - name: Generate + Upload
         env:
