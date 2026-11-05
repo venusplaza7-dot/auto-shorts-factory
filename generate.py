@@ -14,7 +14,7 @@ Plot: They are washing a red toy car with bubbles, slapstick, funny fall, happy 
 Return ONLY JSON: {"title": "Short title", "story": "story text"}"""
 
 response = client.models.generate_content(
-    model="gemini-2.0-flash-lite",
+    model="gemini-3.8-flash-lite",
     contents=prompt
 )
 text = response.text.replace('```json','').replace('```','').strip()
