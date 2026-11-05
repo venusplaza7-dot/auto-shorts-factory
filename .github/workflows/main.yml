@@ -12,13 +12,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          
 
       - name: Install Deps
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y ffmpeg fonts-dejavu-core imagemagick
-          pip install Pillow==9.5.0 gTTS moviepy==1.0.3 numpy requests google-api-python-client google-auth-httplib2 google-auth-oauthlib
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          pip install Pillow==9.5.0 gTTS==2.5.1 moviepy==1.0.3 numpy==1.26.4 requests google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
       - name: Generate + Upload
         env:
