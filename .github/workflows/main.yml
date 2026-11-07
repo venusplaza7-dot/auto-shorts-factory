@@ -1,7 +1,4 @@
-name: Milo Pip REAL MOVIE 12 Per Day
-on:
-  schedule:
-    - cron: '17 */2 * * *'
+name:
   workflow_dispatch:
 
 jobs:
